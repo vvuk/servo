@@ -55,7 +55,7 @@ use script::dom::htmlimageelement::LayoutHTMLImageElementHelpers;
 use script::dom::htmlinputelement::{HTMLInputElement, LayoutHTMLInputElementHelpers};
 use script::dom::htmltextareaelement::LayoutHTMLTextAreaElementHelpers;
 use script::dom::node::{HAS_CHANGED, IS_DIRTY, HAS_DIRTY_SIBLINGS, HAS_DIRTY_DESCENDANTS};
-use script::dom::node::{LayoutNodeHelpers, SharedLayoutData};
+use script::dom::node::{IN_FRAGMENTATION_CONTAINER, LayoutNodeHelpers, SharedLayoutData};
 use script::dom::node::{Node, NodeTypeId};
 use script::dom::text::Text;
 use selectors::matching::DeclarationBlock;
@@ -271,6 +271,14 @@ impl<'ln> LayoutNode<'ln> {
 
     pub unsafe fn set_dirty_descendants(&self, value: bool) {
         self.node.set_flag(HAS_DIRTY_DESCENDANTS, value)
+    }
+
+    pub fn in_fragmentation_container(&self) -> bool {
+        unsafe { self.node.get_flag(IN_FRAGMENTATION_CONTAINER) }
+    }
+
+    pub unsafe fn set_in_fragmentation_container(&self, value: bool) {
+        self.node.set_flag(IN_FRAGMENTATION_CONTAINER, value)
     }
 
     /// Borrows the layout data without checks.
@@ -890,6 +898,10 @@ impl<'ln> ThreadSafeLayoutNode<'ln> {
             Some(ref mut layout_data) => layout_data.data.flags.remove(flags),
             _ => panic!("no layout data for this node"),
         }
+    }
+
+    pub fn in_fragmentation_container(&self) -> bool {
+        self.node.in_fragmentation_container()
     }
 
     /// Returns true if this node contributes content. This is used in the implementation of

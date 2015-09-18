@@ -169,6 +169,9 @@ bitflags! {
                  (https://html.spec.whatwg.org/multipage/#selector-active). \
                  FIXME(#7333): set/unset this when appropriate"]
         const IN_ACTIVE_STATE = 0x800,
+
+        /// Whether any ancestor is a fragmentation container
+        const IN_FRAGMENTATION_CONTAINER = 0x1000
     }
 }
 
